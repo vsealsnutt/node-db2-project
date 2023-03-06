@@ -32,10 +32,10 @@ function checkCarPayload(req, res, next) {
 }
 
 function checkVinNumberValid(req, res, next) {
-  if (vinValidator.validate(req.params.vin)) {
+  if (vinValidator.validate(req.body.vin)) {
     next();
   } else {
-    next({ status: 400, message: `vin ${req.params.vin} is invalid` });
+    next({ status: 400, message: `vin ${req.body.vin} is invalid` });
   }
 }
 
