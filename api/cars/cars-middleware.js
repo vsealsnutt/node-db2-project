@@ -1,4 +1,5 @@
 const Car = require('./cars-model');
+const db = require('../../data/db-config');
 
 async function checkCarId(req, res, next) {
   try {
@@ -32,7 +33,16 @@ function checkVinNumberValid(req, res, next) {
 }
 
 async function checkVinNumberUnique(req, res, next) {
-  // DO YOUR MAGIC
+  try {
+    const existingVin = await db('cars').where('vin', req.body.vin).first();
+    if (existingVin) {
+      next({ status: 400, message: `vin ${req.body.vin} already exists` });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = {
