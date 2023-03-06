@@ -1,5 +1,6 @@
 const Car = require('./cars-model');
 const db = require('../../data/db-config');
+const vinValidator = require('vin-validator');
 
 async function checkCarId(req, res, next) {
   try {
@@ -17,19 +18,25 @@ async function checkCarId(req, res, next) {
 
 function checkCarPayload(req, res, next) {
   const { vin, make, model, mileage } = req.body;
-  if (vin === undefined ||
-    make === undefined ||
-    model === undefined || 
-    mileage === undefined
-  ) {
-    next({ status: 400, message: `${req.body.field} is missing` });
+  if (!vin) {
+    next({ status: 400, message: 'vin is missing' });
+  } else if (!make) {
+    next({ status: 400, message: 'make is missing' });
+  } else if (!model) {
+    next({ status: 400, message: 'model is missing' });
+  } else if (!mileage) {
+    next({ status: 400, message: 'mileage is missing' });
   } else {
     next();
   }
 }
 
 function checkVinNumberValid(req, res, next) {
-  // DO YOUR MAGIC
+  if (vinValidator.validate(req.params.vin)) {
+    next();
+  } else {
+    next({ status: 400, message: `vin ${req.params.vin} is invalid` });
+  }
 }
 
 async function checkVinNumberUnique(req, res, next) {
