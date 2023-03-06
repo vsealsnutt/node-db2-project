@@ -15,7 +15,16 @@ async function checkCarId(req, res, next) {
 }
 
 function checkCarPayload(req, res, next) {
-  // DO YOUR MAGIC
+  const { vin, make, model, mileage } = req.body;
+  if (vin === undefined ||
+    make === undefined ||
+    model === undefined || 
+    mileage === undefined
+  ) {
+    next({ status: 400, message: `${req.body.field} is missing` });
+  } else {
+    next();
+  }
 }
 
 function checkVinNumberValid(req, res, next) {
@@ -31,4 +40,4 @@ module.exports = {
   checkCarPayload,
   checkVinNumberValid,
   checkVinNumberUnique
-}
+};
